@@ -18,9 +18,18 @@ h1, p {
 .carousel {
 	overflow: hidden;
 }
+.js .carousel {
+	position: relative;
+	min-height: 300px;
+	width: 80%;
+	margin: 0 auto;
+}
 
 .carousel ul {
 	list-style-type: none;
+}
+.js .carousel ul {
+	position: absolute;
 }
 
 .carousel li {
@@ -34,6 +43,9 @@ h1, p {
 	}
 	.carousel li:nth-child(2n+1) {
 		clear: left;
+	}
+	.js .carousel li:nth-child(2n+1) {
+		clear: none;
 	}
 }
 
