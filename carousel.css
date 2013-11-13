@@ -1,3 +1,6 @@
+*, *:before, *:after {
+   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
 html, body, div, h1, ul, li, p, img {
 	margin:0;
 	padding:0;
@@ -9,7 +12,40 @@ html {
 h1, p {
 	font-size: 1.2em;
 	line-height: 1.2;
+	margin-bottom: 0.5em;
 }
-img {
+
+.carousel {
+	overflow: hidden;
+}
+
+.carousel ul {
+	list-style-type: none;
+}
+
+.carousel li {
+	float: left;
+	margin-bottom: 1em;
+}
+@media (min-width: 720px) {
+	.carousel li {
+		width: 50%;
+		padding: 0.5em;
+	}
+	.carousel li:nth-child(2n+1) {
+		clear: left;
+	}
+}
+
+.carousel img {
 	opacity: 0.05;
+	max-width: 100%;
+	margin: 0 auto;
+	display: block;
+}
+
+@media (min-width: 720px) {
+	.carousel img {
+		margin: 0;
+	}
 }
