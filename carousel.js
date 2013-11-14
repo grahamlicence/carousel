@@ -1,20 +1,11 @@
-if(!window.jQuery) {
-	var s = document.createElement('script');
-	s.setAttribute('src', 'http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js');
-	s.setAttribute('type', 'text/javascript');
-	document.getElementsByTagName('body')[0].appendChild(s);
-	s.onload = function () {
-		$('.carousel').each(Carousel);
-	};
-}
 
-/* 
-	considerations:
-	* should left arrow be before the carousel content?
-*/
+// allow forEach on node lists
+NodeList.prototype.forEach = Array.prototype.forEach;
+HTMLCollection.prototype.forEach = Array.prototype.forEach; // Because of https://bugzilla.mozilla.org/show_bug.cgi?id=14869
 
-var Carousel = function (index, el) {
+var Carousel = function (el) {
 	'use strict';
+	// keeping the $varName for ease of identifying element references
 	var $carousel,
 		$carouselContainer,
 		$carouselWrapper,
@@ -24,39 +15,44 @@ var Carousel = function (index, el) {
 		width,
 		height,
 		direction,
-		animating = false,
 		animatingDirection,
 		animationEnd,
 		viewing = 0;
 
 	// make the current item visible
 	function showCurrent () {
-		$carouselItems.eq(viewing).addClass('carousel-item__currently-viewing');
+		$carouselItems[viewing].className = $carouselItems[viewing].className + ' carousel-item__currently-viewing';
 	}
 	function removePrevious (prev) {
-		$carouselItems.eq(prev).removeClass('carousel-item__currently-viewing');
+		$carouselItems[prev].className = $carouselItems[prev].className.replace('carousel-item__currently-viewing', '');
 	}
 
 	// set widths and heights of wrapper and items
-	function setDimensions (yep) {
+	function setDimensions () {
 		height = 0;
-		width = $carousel.width();
+		width = $carousel.clientWidth;
 		if (direction === 'vertical') {
-			$carouselWrapper.height($carouselItems.length * height);
+			$carouselWrapper.style.height = ($carouselItems.length * height) + 'px';
 		} else if (direction === 'horizontal') {
-			$carouselWrapper.width($carouselItems.length * width);
+			$carouselWrapper.style.width = ($carouselItems.length * width) + 'px';
 		}
-		$carouselItems.width(width);
+		$carouselItems.forEach(function (el) {
+			el.style.width = width + 'px';
+		});
 		// reset height and find from new dimensions
-		$carouselItems.height('auto');
-		$carouselItems.each(function () {
-			var elHeight = $(this).innerHeight();
+		$carouselItems.forEach(function (el) {
+			el.style.height = 'auto';
+		});
+		$carouselItems.forEach(function (el) {
+			var elHeight = el.clientHeight;
 			if (height < elHeight) {
 				height = elHeight;
 			}
 		});
-		$carouselItems.height(height);
-		$carouselContainer.height(height);
+		$carouselItems.forEach(function (el) {
+			el.style.height = height + 'px';
+		});
+		$carouselContainer.style.height = height + 'px';
 	}
 
 	// add/remove disabled class from arrows
@@ -75,9 +71,9 @@ var Carousel = function (index, el) {
 	// move the carousel
 	function animate () {
 		if (direction === "horizontal") {
-			$carouselWrapper[0].style.left = (-1 * viewing * width) + 'px';
+			$carouselWrapper.style.left = (-1 * viewing * width) + 'px';
 		} else {
-			$carouselWrapper[0].style.top = (-1 * viewing * height) + 'px';
+			$carouselWrapper.style.top = (-1 * viewing * height) + 'px';
 		}
 	}
 
@@ -100,13 +96,11 @@ var Carousel = function (index, el) {
 			viewing = prev;
 			return;
 		}
-		animating = true;
 		showCurrent();
 		animate();
 		// wait for animation to end
 		animationEnd = setTimeout(function () {
 			removePrevious(prev);
-			animating = false;
 		}, 1000);
 		updateClasses();
 	}
@@ -125,12 +119,13 @@ var Carousel = function (index, el) {
 		next = createButton('carousel-next');
 		next.direction = 1;
 		next.addEventListener('click', move);
-		$carousel.append(prev, next);
+		$carousel.appendChild(prev);
+		$carousel.appendChild(next);
 	}
 
 	// allow the carousel to be moved by up/down/left/right arrows
 	function arrowNavigation () {
-		$carouselContainer.on('keydown', function (e) {
+		$carouselContainer.addEventListener('keydown', function (e) {
 			if (e.keyCode) {
 				if (e.keyCode === 37 || e.keyCode === 38) {
 					move(e, -1);
@@ -142,18 +137,18 @@ var Carousel = function (index, el) {
 	}
 
 	function init (el) {
-		$carousel = $(el);
-		$carouselContainer = $carousel.find('.carousel-container');
-		$carouselWrapper = $carousel.find('.carousel-wrapper');
-		$carouselItems = $carousel.find('.carousel-item');
-		direction = $carousel.data('direction');
-		$carouselContainer.attr('tabindex', 0);
+		$carousel = el;
+		$carouselContainer = $carousel.querySelectorAll('.carousel-container')[0];
+		$carouselWrapper = $carousel.querySelectorAll('.carousel-wrapper')[0];
+		$carouselItems = $carousel.querySelectorAll('.carousel-item');
+		direction = $carousel.dataset.direction;
+		$carouselContainer.tabindex = 0;
 		setDimensions();
-		$carousel.addClass('carousel-init');
-		$(window).resize(function () {
+		$carousel.className = $carousel.className + ' carousel-init';
+		window.onresize = function () {
 			setDimensions();
 			animate();
-		});
+		};
 		addButtons();
 		showCurrent();
 		updateClasses();
@@ -161,3 +156,8 @@ var Carousel = function (index, el) {
 	}
 	return init(el);
 };
+
+var carousels = document.querySelectorAll('.carousel');
+carousels.forEach(function (el, i, a) {
+	Carousel(carousels[i]);
+});
