@@ -30,6 +30,9 @@ var Carousel = function (index, el) {
 		width,
 		height,
 		direction,
+		animating = false,
+		animatingDirection,
+		animationEnd,
 		viewing = 0;
 
 	// make the current item visible
@@ -73,16 +76,26 @@ var Carousel = function (index, el) {
 		}
 	}
 
-	// move the carousel 
+	// move the carousel
 	function move (e, dir) {
-		var prev = viewing,
-			attribute;
 		e.preventDefault();
-		viewing += parseFloat(e.target.direction, 10) || dir;
+		var prev = viewing,
+			attribute,
+			positionChange = parseFloat(e.target.direction, 10) || dir;
+		// check if there is a direction change during the animation
+		if (!animatingDirection) {
+			animatingDirection = positionChange;
+		} else if (animatingDirection !== positionChange) {
+			// we've changed direction and are now going back so don't hide
+			clearTimeout(animationEnd);
+		}
+		animatingDirection = positionChange;
+		viewing += positionChange;
 		if (viewing === -1 || viewing === $carouselItems.length) {
 			viewing = prev;
 			return;
 		}
+		animating = true;
 		showCurrent();
 		if (direction === "horizontal") {
 			$carouselWrapper[0].style.left = (-1 * viewing * width) + 'px';
@@ -90,8 +103,9 @@ var Carousel = function (index, el) {
 			$carouselWrapper[0].style.top = (-1 * viewing * height) + 'px';
 		}
 		// wait for animation to end
-		setTimeout(function () {
+		animationEnd = setTimeout(function () {
 			removePrevious(prev);
+			animating = false;
 		}, 1000);
 		updateClasses();
 	}
@@ -103,8 +117,8 @@ var Carousel = function (index, el) {
 		button.className = classname;
 		return button;
 	}
-		prev = createButton('carousel-prev');
 	function addButtons () {
+		prev = createButton('carousel-prev');
 		prev.direction = -1;
 		prev.addEventListener('click', move);
 		next = createButton('carousel-next');
