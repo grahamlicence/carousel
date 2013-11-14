@@ -10,13 +10,7 @@ if(!window.jQuery) {
 
 /* 
 	considerations:
-	1 carousel should be accessed by tabs, tab in to first item, tab out to controls (prev/next), then tab to 'dot' links
-	2 could use left right arrows to navigate through carousel, do people use keys other than tab/shift+tab? 
-	3 no auto play
-	4 prevent tabbing to hidden/off screen content with visibility: hidden rather than tabindex as can control through css
-	5 add controls via JS
-	6 should left arrow be before the carousel content?
-	7 should we cater for moving focus if in carousel item and the arrow is clicked?
+	* should left arrow be before the carousel content?
 */
 
 var Carousel = function (index, el) {
@@ -44,23 +38,25 @@ var Carousel = function (index, el) {
 	}
 
 	// set widths and heights of wrapper and items
-	function setDimensions () {
-		var height = 0;
+	function setDimensions (yep) {
+		height = 0;
+		width = $carousel.width();
 		if (direction === 'vertical') {
 			$carouselWrapper.height($carouselItems.length * height);
 		} else if (direction === 'horizontal') {
 			$carouselWrapper.width($carouselItems.length * width);
 		}
 		$carouselItems.width(width);
+		// reset height and find from new dimensions
+		$carouselItems.height('auto');
 		$carouselItems.each(function () {
-			var elHeight = $(this).height();
+			var elHeight = $(this).innerHeight();
 			if (height < elHeight) {
 				height = elHeight;
 			}
 		});
 		$carouselItems.height(height);
 		$carouselContainer.height(height);
-		$carousel.addClass('carousel-init');
 	}
 
 	// add/remove disabled class from arrows
@@ -73,6 +69,15 @@ var Carousel = function (index, el) {
 			prev.className = prev.className.replace(' carousel-button__disabled', '');
 		} else if (viewing === $carouselItems.length - 2) {
 			next.className = next.className.replace(' carousel-button__disabled', '');
+		}
+	}
+
+	// move the carousel
+	function animate () {
+		if (direction === "horizontal") {
+			$carouselWrapper[0].style.left = (-1 * viewing * width) + 'px';
+		} else {
+			$carouselWrapper[0].style.top = (-1 * viewing * height) + 'px';
 		}
 	}
 
@@ -97,11 +102,7 @@ var Carousel = function (index, el) {
 		}
 		animating = true;
 		showCurrent();
-		if (direction === "horizontal") {
-			$carouselWrapper[0].style.left = (-1 * viewing * width) + 'px';
-		} else {
-			$carouselWrapper[0].style.top = (-1 * viewing * height) + 'px';
-		}
+		animate();
 		// wait for animation to end
 		animationEnd = setTimeout(function () {
 			removePrevious(prev);
@@ -145,11 +146,14 @@ var Carousel = function (index, el) {
 		$carouselContainer = $carousel.find('.carousel-container');
 		$carouselWrapper = $carousel.find('.carousel-wrapper');
 		$carouselItems = $carousel.find('.carousel-item');
-		width = $carousel.width();
-		height = $carousel.height();
 		direction = $carousel.data('direction');
 		$carouselContainer.attr('tabindex', 0);
 		setDimensions();
+		$carousel.addClass('carousel-init');
+		$(window).resize(function () {
+			setDimensions();
+			animate();
+		});
 		addButtons();
 		showCurrent();
 		updateClasses();

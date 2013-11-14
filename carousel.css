@@ -14,6 +14,9 @@ h1, p {
 	line-height: 1.2;
 	margin-bottom: 0.5em;
 }
+hr {
+	margin: 2em 0;
+}
 .carousel {
 	position: relative;
 }
@@ -51,7 +54,7 @@ h1, p {
 .carousel-item {
 	background: #f9f9f9;
 	float: left;
-	margin-bottom: 1em;
+	/*margin-bottom: 1em;*/
 }
 .carousel-init .carousel-item {
 	visibility: hidden;
@@ -90,6 +93,13 @@ h1, p {
 @media (min-width: 720px) {
 	.carousel img {
 		margin: 0;
+	}
+}
+
+@media (min-width: 960px) {
+	.carousel img {
+		float: left;
+		margin-right: 0.5em;
 	}
 }
 
