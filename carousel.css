@@ -14,37 +14,56 @@ h1, p {
 	line-height: 1.2;
 	margin-bottom: 0.5em;
 }
-
 .carousel {
-	overflow: hidden;
+	position: relative;
 }
 .js .carousel {
-	position: relative;
 	min-height: 300px;
 	width: 80%;
-	margin: 0 auto;
+	margin: 0 auto;	
+}
+.carousel-container {
+	width: 100%;
+	overflow: hidden;
+}
+.js .carousel-container {
+	min-height: 300px;
+	position: relative;
 }
 
-.carousel ul {
+.carousel-wrapper {
 	list-style-type: none;
 }
-.js .carousel ul {
+.js .carousel-wrapper {
 	position: absolute;
+	left: 0;
+	top: 0;
+	-webkit-transition: left 1s;
+	transition: left 1s;
 }
 
-.carousel li {
+.carousel-item {
+	background: #f9f9f9;
 	float: left;
 	margin-bottom: 1em;
 }
+.carousel-init .carousel-item {
+	visibility: hidden;
+}
+
+.carousel .carousel-item__currently-viewing {
+	visibility: visible;
+}
+
 @media (min-width: 720px) {
-	.carousel li {
+	.carousel-item {
 		width: 50%;
 		padding: 0.5em;
 	}
-	.carousel li:nth-child(2n+1) {
+	.carousel-item:nth-child(2n+1) {
 		clear: left;
 	}
-	.js .carousel li:nth-child(2n+1) {
+	.js .carousel-item:nth-child(2n+1) {
 		clear: none;
 	}
 }
@@ -60,4 +79,42 @@ h1, p {
 	.carousel img {
 		margin: 0;
 	}
+}
+
+.carousel-prev,
+.carousel-next {
+	position: absolute;
+	top: 40%;
+	z-index: 2;
+	display: block;
+	text-decoration: none;
+	width: 35px;
+	height: 52px;
+	overflow: hidden;
+}
+.carousel-horizontal .carousel-prev {
+	left: -45px;
+	top: 40%;
+}
+.carousel-horizontal .carousel-prev:after {
+	content: "\25C0";
+	font-size: 65px;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.carousel-horizontal .carousel-next {
+	right: -45px;
+	top: 40%;
+}
+.carousel-horizontal .carousel-next:after {
+	content: "\25B6";
+	font-size: 65px;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.carousel-button__disabled {
+	opacity: 0.3;
+	cursor: default;
 }
