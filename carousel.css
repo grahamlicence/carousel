@@ -101,6 +101,7 @@ h1, p {
 	text-decoration: none;
 	width: 35px;
 	overflow: hidden;
+	color: #000;
 }
 /* horizontal */
 .carousel-horizontal .carousel-prev,
