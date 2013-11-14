@@ -28,6 +28,8 @@ var Carousel = function (index, el) {
 		prev,
 		next,
 		width,
+		height,
+		direction,
 		viewing = 0;
 
 	// make the current item visible

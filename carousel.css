@@ -68,6 +68,12 @@ h1, p {
 	}
 }
 
+.carousel-vertical {
+	max-width: 400px;
+	height: 450px;
+	padding: 4em 0;
+}
+
 .carousel img {
 	opacity: 0.05;
 	max-width: 100%;
@@ -84,13 +90,17 @@ h1, p {
 .carousel-prev,
 .carousel-next {
 	position: absolute;
-	top: 40%;
 	z-index: 2;
 	display: block;
 	text-decoration: none;
 	width: 35px;
-	height: 52px;
 	overflow: hidden;
+}
+/* horizontal */
+.carousel-horizontal .carousel-prev,
+.carousel-horizontal .carousel-next {
+	height: 52px;
+	top: 40%;
 }
 .carousel-horizontal .carousel-prev {
 	left: -45px;
@@ -113,6 +123,32 @@ h1, p {
 	position: absolute;
 	top: 0;
 	right: 0;
+}
+/* vertical */
+.carousel-vertical .carousel-prev,
+.carousel-vertical .carousel-next {
+	height: 35px;
+	left: 47%;
+}
+.carousel-vertical .carousel-prev {
+	top: 0;
+}
+.carousel-vertical .carousel-prev:after {
+	content: "\25B2";
+	font-size: 65px;
+	position: absolute;
+	top: 0;
+	left: -15px;
+}
+.carousel-vertical .carousel-next {
+	bottom: 0;
+}
+.carousel-vertical .carousel-next:after {
+	content: "\25BC";
+	font-size: 65px;
+	position: absolute;
+	bottom: 0;
+	right: -15px;
 }
 .carousel-button__disabled {
 	opacity: 0.3;
