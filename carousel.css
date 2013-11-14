@@ -171,3 +171,16 @@ hr {
 	opacity: 0.3;
 	cursor: default;
 }
+
+.carousel__quick-links {
+	position: absolute;
+	bottom: 0;
+	left: 45%;
+}
+.carousel__quick-link {
+	width: 10px;
+	height: 10px;
+	display: inline-block;
+	background: red;
+	margin-right: 0.3em;
+}
