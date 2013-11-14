@@ -74,11 +74,11 @@ var Carousel = function (index, el) {
 	}
 
 	// move the carousel 
-	function move (e) {
+	function move (e, dir) {
 		var prev = viewing,
 			attribute;
 		e.preventDefault();
-		viewing += parseFloat(e.target.direction, 10);
+		viewing += parseFloat(e.target.direction, 10) || dir;
 		if (viewing === -1 || viewing === $carouselItems.length) {
 			viewing = prev;
 			return;
@@ -113,6 +113,19 @@ var Carousel = function (index, el) {
 		$carousel.append(prev, next);
 	}
 
+	// allow the carousel to be moved by up/down/left/right arrows
+	function arrowNavigation () {
+		$carouselWrapper.on('keydown', function (e) {
+			if (e.keyCode) {
+				if (e.keyCode === 37 || e.keyCode === 38) {
+					move(e, -1);
+				} else if (e.keyCode === 39 || e.keyCode === 40) {
+					move(e, 1);
+				}
+			}
+		});
+	}
+
 	function init (el) {
 		$carousel = $(el);
 		$carouselContainer = $carousel.find('.carousel-container');
@@ -121,11 +134,12 @@ var Carousel = function (index, el) {
 		width = $carousel.width();
 		height = $carousel.height();
 		direction = $carousel.data('direction');
-		console.log(direction)
+		$carouselWrapper.attr('tabindex', 0);
 		setDimensions();
 		addButtons();
 		showCurrent();
 		updateClasses();
+		arrowNavigation();
 	}
 	return init(el);
 };
