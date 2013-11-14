@@ -38,8 +38,14 @@ h1, p {
 	position: absolute;
 	left: 0;
 	top: 0;
+}
+.js .carousel-horizontal .carousel-wrapper {
 	-webkit-transition: left 1s;
 	transition: left 1s;
+}
+.js .carousel-vertical .carousel-wrapper {
+	-webkit-transition: top 1s;
+	transition: top 1s;
 }
 
 .carousel-item {
@@ -110,7 +116,7 @@ h1, p {
 	content: "\25C0";
 	font-size: 65px;
 	position: absolute;
-	top: 0;
+	top: -7px;
 	left: 0;
 }
 .carousel-horizontal .carousel-next {
@@ -121,7 +127,7 @@ h1, p {
 	content: "\25B6";
 	font-size: 65px;
 	position: absolute;
-	top: 0;
+	top: -7px;
 	right: 0;
 }
 /* vertical */

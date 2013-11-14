@@ -43,7 +43,11 @@ var Carousel = function (index, el) {
 	// set widths and heights of wrapper and items
 	function setDimensions () {
 		var height = 0;
-		$carouselWrapper.width($carouselItems.length * width);
+		if (direction === 'vertical') {
+			$carouselWrapper.height($carouselItems.length * height);
+		} else if (direction === 'horizontal') {
+			$carouselWrapper.width($carouselItems.length * width);
+		}
 		$carouselItems.width(width);
 		$carouselItems.each(function () {
 			var elHeight = $(this).height();
@@ -71,7 +75,8 @@ var Carousel = function (index, el) {
 
 	// move the carousel 
 	function move (e) {
-		var prev = viewing;
+		var prev = viewing,
+			attribute;
 		e.preventDefault();
 		viewing += parseFloat(e.target.direction, 10);
 		if (viewing === -1 || viewing === $carouselItems.length) {
@@ -79,7 +84,11 @@ var Carousel = function (index, el) {
 			return;
 		}
 		showCurrent();
-		$carouselWrapper.css({left: -1 * viewing * width});
+		if (direction === "horizontal") {
+			$carouselWrapper[0].style.left = (-1 * viewing * width) + 'px';
+		} else {
+			$carouselWrapper[0].style.top = (-1 * viewing * height) + 'px';
+		}
 		// wait for animation to end
 		setTimeout(function () {
 			removePrevious(prev);
@@ -110,6 +119,9 @@ var Carousel = function (index, el) {
 		$carouselWrapper = $carousel.find('.carousel-wrapper');
 		$carouselItems = $carousel.find('.carousel-item');
 		width = $carousel.width();
+		height = $carousel.height();
+		direction = $carousel.data('direction');
+		console.log(direction)
 		setDimensions();
 		addButtons();
 		showCurrent();
