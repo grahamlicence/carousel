@@ -129,7 +129,7 @@ var Carousel = function (index, el) {
 
 	// allow the carousel to be moved by up/down/left/right arrows
 	function arrowNavigation () {
-		$carouselWrapper.on('keydown', function (e) {
+		$carouselContainer.on('keydown', function (e) {
 			if (e.keyCode) {
 				if (e.keyCode === 37 || e.keyCode === 38) {
 					move(e, -1);
@@ -148,7 +148,7 @@ var Carousel = function (index, el) {
 		width = $carousel.width();
 		height = $carousel.height();
 		direction = $carousel.data('direction');
-		$carouselWrapper.attr('tabindex', 0);
+		$carouselContainer.attr('tabindex', 0);
 		setDimensions();
 		addButtons();
 		showCurrent();
