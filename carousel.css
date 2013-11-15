@@ -17,20 +17,46 @@ h1, p {
 hr {
 	margin: 2em 0;
 }
+
 .carousel {
 	position: relative;
 }
 .js .carousel {
-	min-height: 300px;
-	width: 80%;
-	margin: 0 auto;	
+	overflow: hidden;
+	padding: 1px 10%;
+	margin: 0 auto;
+	position: relative;
 }
+.js .carousel:after {
+	content: " ";
+	background: url(loader.gif) no-repeat center #fff;
+	border: solid 1px #ccc;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 10;
+	opacity: 0.5;
+	-webkit-transition: all 1s;
+	transition: all 1s;
+}
+.js .carousel-init:after {
+	content: "  "; /* gets IE to repaint the psuedo element */
+	display: none;
+}
+.js .carousel-vertical {
+	max-width: 400px;
+	height: 450px;
+	padding: 4em 0;
+}
+
+/* carousel window */
 .carousel-container {
 	width: 100%;
 	overflow: hidden;
 }
 .js .carousel-container {
-	min-height: 300px;
 	position: relative;
 }
 
@@ -42,6 +68,7 @@ hr {
 	left: 0;
 	top: 0;
 }
+/*only adding transitions on position*/
 .js .carousel-horizontal .carousel-wrapper {
 	-webkit-transition: left 1s;
 	transition: left 1s;
@@ -54,12 +81,11 @@ hr {
 .carousel-item {
 	background: #f9f9f9;
 	float: left;
-	/*margin-bottom: 1em;*/
+	padding: 0.5em;
 }
-.carousel-init .carousel-item {
+.js .carousel-item {
 	visibility: hidden;
 }
-
 .carousel .carousel-item__currently-viewing {
 	visibility: visible;
 }
@@ -67,7 +93,6 @@ hr {
 @media (min-width: 720px) {
 	.carousel-item {
 		width: 50%;
-		padding: 0.5em;
 	}
 	.carousel-item:nth-child(2n+1) {
 		clear: left;
@@ -77,11 +102,13 @@ hr {
 	}
 }
 
-.js .carousel-vertical {
-	max-width: 400px;
-	height: 450px;
-	padding: 4em 0;
+.carousel-horizontal .carousel-item {
+	margin-right: 0.5em;
 }
+.carousel-vertical .carousel-item {
+	margin-bottom: 0.5em;
+}
+
 
 .carousel img {
 	opacity: 0.05;
@@ -120,7 +147,7 @@ hr {
 	top: 40%;
 }
 .carousel-horizontal .carousel-prev {
-	left: -45px;
+	left: -7px;
 	top: 40%;
 }
 .carousel-horizontal .carousel-prev:after {
@@ -131,7 +158,7 @@ hr {
 	left: 0;
 }
 .carousel-horizontal .carousel-next {
-	right: -45px;
+	right: -7px;
 	top: 40%;
 }
 .carousel-horizontal .carousel-next:after {
@@ -140,6 +167,15 @@ hr {
 	position: absolute;
 	top: -7px;
 	right: 0;
+}
+/* nudge arrows in on larger viewports */
+@media (min-width: 480px) {
+	.carousel-horizontal .carousel-prev {
+		left: 15px;
+	}
+	.carousel-horizontal .carousel-next {
+		right: 15px;
+	}
 }
 /* vertical */
 .carousel-vertical .carousel-prev,
@@ -163,7 +199,7 @@ hr {
 .carousel-vertical .carousel-next:after {
 	content: "\25BC";
 	font-size: 65px;
-	position: absolute;
+	position: absolute;	
 	bottom: 0;
 	right: -15px;
 }
@@ -181,6 +217,10 @@ hr {
 	width: 10px;
 	height: 10px;
 	display: inline-block;
-	background: red;
+	background: #000;
 	margin-right: 0.3em;
+	border-radius: 10px;
+}
+body {
+	overflow-y: hidden;
 }

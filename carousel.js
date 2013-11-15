@@ -1,22 +1,7 @@
-if(!window.jQuery) {
-	var s = document.createElement('script');
-	s.setAttribute('src', 'http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js');
-	s.setAttribute('type', 'text/javascript');
-	document.getElementsByTagName('body')[0].appendChild(s);
-	s.onload = function () {
-		$('.carousel').each(Carousel);
-	};
-	// IE8
-	s.onreadystatechange = function () {
-		if ( document.readyState === "complete" ) {
-			$('.carousel').each(Carousel);
-		}
-	};
-}
 // simple check for transitions support, remove if using modernizr
 function supportsTransitions() {
-	var b = document.body || document.documentElement;
-	var s = b.style;
+	var b = document.body || document.documentElement,
+		s = b.style;
 	if (typeof s['transition'] === 'string' || typeof s['Webkittransition'] === 'string') {
 		return true;
 	}
@@ -37,6 +22,7 @@ var Carousel = function (index, el) {
 		next,
 		width,
 		height,
+		margin,
 		direction,
 		animating = false,
 		animatingDirection,
@@ -55,11 +41,14 @@ var Carousel = function (index, el) {
 	// set widths and heights of wrapper and items
 	function setDimensions (yep) {
 		height = 0;
-		width = $carousel.width();
+		width = $carouselContainer.width();
+
 		if (direction === 'vertical') {
-			$carouselWrapper.height($carouselItems.length * height);
+			margin = parseInt($carouselItems.eq(0).css('marginBottom'), 10);
+			$carouselWrapper.height($carouselItems.length * (height + margin));
 		} else if (direction === 'horizontal') {
-			$carouselWrapper.width($carouselItems.length * width);
+			margin = parseInt($carouselItems.eq(0).css('marginRight'), 10);
+			$carouselWrapper.width($carouselItems.length * (width + margin));
 		}
 		$carouselItems.width(width);
 		// reset height and find from new dimensions
@@ -90,9 +79,9 @@ var Carousel = function (index, el) {
 	// move the carousel
 	function animate () {
 		if (direction === "horizontal") {
-			$carouselWrapper[0].style.left = (-1 * viewing * width) + 'px';
+			$carouselWrapper[0].style.left = (-1 * viewing * (width + margin)) + 'px';
 		} else {
-			$carouselWrapper[0].style.top = (-1 * viewing * height) + 'px';
+			$carouselWrapper[0].style.top = (-1 * viewing * (height + margin)) + 'px';
 		}
 	}
 
@@ -143,6 +132,7 @@ var Carousel = function (index, el) {
 		next = createButton('carousel-next');
 		next.direction = 1;
 		$(next).on('click', move);
+		$carousel.append(prev, next);
 	}
 	function quickLink () {
 		console.log('yep')
@@ -156,7 +146,7 @@ var Carousel = function (index, el) {
 			$(icon).on('click', quickLink);
 			div.appendChild(icon);
 		});
-		$carousel.append(prev, next, div);
+		$carousel.append(div);
 	}
 
 	// allow the carousel to be moved by up/down/left/right arrows
@@ -186,7 +176,7 @@ var Carousel = function (index, el) {
 			animate();
 		});
 		addButtons();
-		addQuickLinks();
+		// addQuickLinks();
 		showCurrent();
 		updateClasses();
 		arrowNavigation();
@@ -194,4 +184,18 @@ var Carousel = function (index, el) {
 	return init(el);
 };
 
-
+if(!window.jQuery) {
+	var s = document.createElement('script');
+	s.setAttribute('src', 'http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js');
+	s.setAttribute('type', 'text/javascript');
+	document.getElementsByTagName('body')[0].appendChild(s);
+	s.onload = function () {
+		$('.carousel').each(Carousel);
+	};
+	// IE8
+	s.onreadystatechange = function () {
+		if (document.readyState === 'complete') {
+			$('.carousel').each(Carousel);
+		}
+	};
+}
