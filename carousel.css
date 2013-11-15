@@ -104,6 +104,7 @@ hr {
 
 .carousel-horizontal .carousel-item {
 	margin-right: 0.5em;
+	/*margin-right: 6px;*/
 }
 .carousel-vertical .carousel-item {
 	margin-bottom: 0.5em;

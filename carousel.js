@@ -44,10 +44,10 @@ var Carousel = function (index, el) {
 		width = $carouselContainer.width();
 
 		if (direction === 'vertical') {
-			margin = parseInt($carouselItems.eq(0).css('marginBottom'), 10);
+			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
 			$carouselWrapper.height($carouselItems.length * (height + margin));
 		} else if (direction === 'horizontal') {
-			margin = parseInt($carouselItems.eq(0).css('marginRight'), 10);
+			margin = parseFloat($carouselItems.eq(0).css('marginRight'));
 			$carouselWrapper.width($carouselItems.length * (width + margin));
 		}
 		$carouselItems.width(width);
