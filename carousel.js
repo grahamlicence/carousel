@@ -144,6 +144,7 @@ var Carousel = function (index, el) {
 		$carousel.append(prev, next);
 	}
 	function quickLink (e) {
+		e.preventDefault();
 		var previousPosition = viewing;
 		viewing = e.currentTarget.position;
 		animate(previousPosition);
