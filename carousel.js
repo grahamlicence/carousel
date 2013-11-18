@@ -71,6 +71,9 @@ var Carousel = function (index, el) {
 		if (!itemsShown) {
 			itemsShown = 1; // in case CSS breaks and this is 0
 		}
+		if (viewing > $carouselItems.length - itemsShown) {
+			viewing = $carouselItems.length - itemsShown;
+		}
 		width = $carouselContainer.width();
 		$carouselItems.width(width / itemsShown);
 
@@ -161,6 +164,7 @@ var Carousel = function (index, el) {
 		animate(previousPosition);
 	}
 	function setQuickLinksShown() {
+		$quickLinks.removeClass('hidden');
 		if (itemsShown > 1) {
 			for (var i = 1; i < itemsShown; i += 1) {
 				$quickLinks.eq($quickLinks.length - i).addClass('hidden');
