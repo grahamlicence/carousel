@@ -68,17 +68,18 @@ var Carousel = function (index, el) {
 	}
 
 	// add/remove disabled class from arrows
-	function updateClasses () {
+	function updateClasses (previousPosition) {
 		if (viewing === 0) {
 			prev.className = prev.className + ' carousel-button__disabled';
-			next.className = next.className.replace(' carousel-button__disabled', '');
 		} else if (viewing === $carouselItems.length - 1) {
-			prev.className = prev.className.replace(' carousel-button__disabled', '');
 			next.className = next.className + ' carousel-button__disabled';
-		} else {
+		}
+		if (previousPosition === 0) {
 			prev.className = prev.className.replace(' carousel-button__disabled', '');
+		} else if (previousPosition === $carouselItems.length - 1) {
 			next.className = next.className.replace(' carousel-button__disabled', '');
 		}
+		// update quick links
 		$quickLinks.removeClass('carousel__quick-link-viewing');
 		$quickLinks.eq(viewing).addClass('carousel__quick-link-viewing');
 	}
@@ -90,11 +91,13 @@ var Carousel = function (index, el) {
 		$carousel.addClass('carousel__animating');
 		// wait for animation to end
 		animationEnd = setTimeout(function () {
-			removePrevious(previousPosition);
+			if (previousPosition) {
+				removePrevious(previousPosition);
+			}
 			animating = false;
 			$carousel.removeClass('carousel__animating');
 		}, animationDuration);
-		updateClasses();
+		updateClasses(previousPosition);
 		if (direction === "horizontal") {
 			$carouselWrapper[0].style.left = (-1 * viewing * (width + margin)) + 'px';
 		} else {
