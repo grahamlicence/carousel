@@ -23,7 +23,7 @@ hr {
 }
 .js .carousel {
 	overflow: hidden;
-	padding: 1px 10%;
+	padding: 1px 0;
 	margin: 0 auto;
 	position: relative;
 }
@@ -47,17 +47,20 @@ hr {
 }
 .js .carousel-vertical {
 	max-width: 400px;
-	height: 450px;
-	padding: 4em 0;
+	/*height: 450px;*/
+	padding: 4em 1px;
 }
 
 /* carousel window */
 .carousel-container {
-	width: 100%;
 	overflow: hidden;
 }
 .js .carousel-container {
 	position: relative;
+}
+.carousel-horizontal .carousel-container {	
+	width: 80%;
+	left: 10%;
 }
 
 .carousel-wrapper {
@@ -81,7 +84,7 @@ hr {
 .carousel-item {
 	background: #f9f9f9;
 	float: left;
-	padding: 0.5em;
+	position: relative;
 }
 .js .carousel-item {
 	visibility: hidden;
@@ -110,24 +113,44 @@ hr {
 	margin-bottom: 0.5em;
 }
 
+.carousel-content {	
+	padding: 0.5em;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
 
 .carousel img {
 	opacity: 0.05;
-	max-width: 100%;
+	/*width: 100%;*/
 	margin: 0 auto;
 	display: block;
+	/*margin-bottom: 1em;*/
+}
+
+@media (min-width: 560px) {
+	.carousel img {
+		width: auto;
+	}
 }
 
 @media (min-width: 720px) {
 	.carousel img {
-		margin: 0;
+		/*margin: 0;*/
+		/*float: left;*/
+		/*margin-right: 1em;*/
+	}
+	.carousel p {
+		clear: left;
 	}
 }
 
 @media (min-width: 960px) {
-	.carousel img {
+	.carousel p {
+		clear: none;
 		float: left;
-		margin-right: 0.5em;
+		width: 45%;
 	}
 }
 
@@ -221,7 +244,4 @@ hr {
 	background: #000;
 	margin-right: 0.3em;
 	border-radius: 10px;
-}
-body {
-	overflow-y: hidden;
 }

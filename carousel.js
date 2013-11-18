@@ -34,24 +34,16 @@ var Carousel = function (index, el) {
 	function showCurrent () {
 		$carouselItems.eq(viewing).addClass('carousel-item__currently-viewing');
 	}
-	function removePrevious (prev) {
-		$carouselItems.eq(prev).removeClass('carousel-item__currently-viewing');
+	function removePrevious (previousPosition) {
+		$carouselItems.eq(previousPosition).removeClass('carousel-item__currently-viewing');
 	}
 
 	// set widths and heights of wrapper and items
-	function setDimensions (yep) {
+	// for horizontal need to set height before getting widths
+	// for vertical need to set widths beofre getting heights
+	function setDimensions () {
+		// set height
 		height = 0;
-		width = $carouselContainer.width();
-
-		if (direction === 'vertical') {
-			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
-			$carouselWrapper.height($carouselItems.length * (height + margin));
-		} else if (direction === 'horizontal') {
-			margin = parseFloat($carouselItems.eq(0).css('marginRight'));
-			$carouselWrapper.width($carouselItems.length * (width + margin));
-		}
-		$carouselItems.width(width);
-		// reset height and find from new dimensions
 		$carouselItems.height('auto');
 		$carouselItems.each(function () {
 			var elHeight = $(this).innerHeight();
@@ -61,6 +53,17 @@ var Carousel = function (index, el) {
 		});
 		$carouselItems.height(height);
 		$carouselContainer.height(height);
+		// set widths
+		width = $carouselContainer.width();
+		$carouselItems.width(width);
+
+		if (direction === 'vertical') {
+			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
+			$carouselWrapper.height($carouselItems.length * (height + margin));
+		} else if (direction === 'horizontal') {
+			margin = parseFloat($carouselItems.eq(0).css('marginRight'));
+			$carouselWrapper.width($carouselItems.length * (width + margin));
+		}
 	}
 
 	// add/remove disabled class from arrows
@@ -88,7 +91,7 @@ var Carousel = function (index, el) {
 	// move the carousel
 	function move (e, dir) {
 		e.preventDefault();
-		var prev = viewing,
+		var previousPosition = viewing,
 			attribute,
 			positionChange = parseFloat(e.target.direction, 10) || dir;
 		// check if there is a direction change during the animation
@@ -101,7 +104,7 @@ var Carousel = function (index, el) {
 		animatingDirection = positionChange;
 		viewing += positionChange;
 		if (viewing === -1 || viewing === $carouselItems.length) {
-			viewing = prev;
+			viewing = previousPosition;
 			return;
 		}
 		animating = true;
@@ -109,7 +112,7 @@ var Carousel = function (index, el) {
 		animate();
 		// wait for animation to end
 		animationEnd = setTimeout(function () {
-			removePrevious(prev);
+			removePrevious(previousPosition);
 			animating = false;
 		}, animationDuration);
 		updateClasses();
@@ -169,8 +172,8 @@ var Carousel = function (index, el) {
 		$carouselItems = $carousel.find('.carousel-item');
 		direction = $carousel.data('direction');
 		$carouselContainer.attr('tabindex', 0);
-		setDimensions();
 		$carousel.addClass('carousel-init');
+		setDimensions();
 		$(window).resize(function () {
 			setDimensions();
 			animate();
@@ -180,6 +183,7 @@ var Carousel = function (index, el) {
 		showCurrent();
 		updateClasses();
 		arrowNavigation();
+		Carousel.set = setDimensions();
 	}
 	return init(el);
 };
