@@ -17,6 +17,10 @@ h1, p {
 hr {
 	margin: 2em 0;
 }
+/* JS helper classes */
+.hidden {
+	display: none!important;
+}
 
 .carousel {
 	position: relative;
@@ -86,6 +90,7 @@ hr {
 	background: #f9f9f9;
 	float: left;
 	position: relative;
+	/*max-width: 500px;*/
 }
 .js .carousel-item {
 	visibility: hidden;
@@ -97,7 +102,7 @@ hr {
 
 @media (min-width: 720px) {
 	.carousel-item {
-		width: 50%;
+		/*width: 50%;*/
 	}
 	.carousel-item:nth-child(2n+1) {
 		clear: left;

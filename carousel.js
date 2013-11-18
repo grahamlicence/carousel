@@ -8,8 +8,10 @@ function supportsTransitions() {
 	return false;
 }
 /* 
-	considerations:
+	notes:
 	* should left arrow be before the carousel content?
+	* should carousel loop endlessly?
+	* if the carousel item has a set width or max width then multiple items are shown if the container is wide enough
 */
 
 var Carousel = function (index, el) {
@@ -26,37 +28,51 @@ var Carousel = function (index, el) {
 		margin,
 		direction,
 		animating = false,
-		animatingDirection,
 		animationEnd,
 		animationDuration = supportsTransitions() ? 1000 : 0, // length of CSS animation
+		itemsShown = 1, // number of items shown at one time
 		viewing = 0;
 
 	// make the current item visible
 	function showCurrent () {
-		$carouselItems.eq(viewing).addClass('carousel-item__currently-viewing');
-	}
-	function removePrevious (previousPosition) {
-		$carouselItems.eq(previousPosition).removeClass('carousel-item__currently-viewing');
+		$carouselItems.removeClass('carousel-item__currently-viewing');
+		for (var i = 0; i < itemsShown; i += 1) {
+			$carouselItems.eq(viewing + i).addClass('carousel-item__currently-viewing');
+		}
 	}
 
 	// set widths and heights of wrapper and items
 	// for horizontal need to set height before getting widths
 	// for vertical need to set widths beofre getting heights
 	function setDimensions () {
-		// set height
+		var maxWidth = 0;
+		// reset dimensions
+		$carouselWrapper.width('auto').height('auto');
+		$carouselItems.width('').height('auto');
 		height = 0;
-		$carouselItems.height('auto');
+		// find the highest and widest dimensions
 		$carouselItems.each(function () {
-			var elHeight = $(this).innerHeight();
+			var $el = $(this),
+				elHeight = $el.innerHeight(),
+				elWidth = $el.innerWidth();
 			if (height < elHeight) {
 				height = elHeight;
 			}
+			// this is used to check the maxmum number of items shown at one time in the carousel
+			if (maxWidth < elWidth) {
+				maxWidth = elWidth;
+			}
 		});
+		// set height
 		$carouselItems.height(height);
 		$carouselContainer.height(height);
 		// set widths
+		itemsShown = parseInt($carouselContainer.width() / maxWidth, 10);
+		if (!itemsShown) {
+			itemsShown = 1; // in case CSS breaks and this is 0
+		}
 		width = $carouselContainer.width();
-		$carouselItems.width(width);
+		$carouselItems.width(width / itemsShown);
 
 		if (direction === 'vertical') {
 			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
@@ -71,7 +87,7 @@ var Carousel = function (index, el) {
 	function updateClasses (previousPosition) {
 		if (viewing === 0) {
 			prev.className = prev.className + ' carousel-button__disabled';
-		} else if (viewing === $carouselItems.length - 1) {
+		} else if (viewing === $carouselItems.length - itemsShown) {
 			next.className = next.className + ' carousel-button__disabled';
 		}
 		if (previousPosition === 0) {
@@ -90,16 +106,14 @@ var Carousel = function (index, el) {
 		showCurrent();
 		$carousel.addClass('carousel__animating');
 		// wait for animation to end
+		clearTimeout(animationEnd);
 		animationEnd = setTimeout(function () {
-			if (previousPosition) {
-				removePrevious(previousPosition);
-			}
 			animating = false;
 			$carousel.removeClass('carousel__animating');
 		}, animationDuration);
 		updateClasses(previousPosition);
-		if (direction === "horizontal") {
-			$carouselWrapper[0].style.left = (-1 * viewing * (width + margin)) + 'px';
+		if (direction === 'horizontal') {
+			$carouselWrapper[0].style.left = (-1 * viewing * ((width / itemsShown) + margin)) + 'px';
 		} else {
 			$carouselWrapper[0].style.top = (-1 * viewing * (height + margin)) + 'px';
 		}
@@ -111,16 +125,9 @@ var Carousel = function (index, el) {
 		var previousPosition = viewing,
 			attribute,
 			positionChange = parseFloat(e.target.direction, 10) || dir;
-		// check if there is a direction change during the animation
-		if (!animatingDirection) {
-			animatingDirection = positionChange;
-		} else if (animatingDirection !== positionChange) {
-			// we've changed direction and are now going back so don't hide
-			clearTimeout(animationEnd);
-		}
-		animatingDirection = positionChange;
+
 		viewing += positionChange;
-		if (viewing === -1 || viewing === $carouselItems.length) {
+		if (viewing === -1 || viewing === $carouselItems.length - (itemsShown - 1)) {
 			viewing = previousPosition;
 			return;
 		}
@@ -130,7 +137,7 @@ var Carousel = function (index, el) {
 	// add buttons to the carousel
 	function createButton (classname, href, index) {
 		var button = document.createElement('a');
-		button.href = href || "#";
+		button.href = href || '#';
 		button.className = classname;
 		if (index !== undefined) {
 			button.position = index;
@@ -146,11 +153,19 @@ var Carousel = function (index, el) {
 		$(next).on('click', move);
 		$carousel.append(prev, next);
 	}
+
 	function quickLink (e) {
 		e.preventDefault();
 		var previousPosition = viewing;
 		viewing = e.currentTarget.position;
 		animate(previousPosition);
+	}
+	function setQuickLinksShown() {
+		if (itemsShown > 1) {
+			for (var i = 1; i < itemsShown; i += 1) {
+				$quickLinks.eq($quickLinks.length - i).addClass('hidden');
+			}
+		}
 	}
 	function addQuickLinks () {
 		var div = document.createElement('div');
@@ -162,6 +177,7 @@ var Carousel = function (index, el) {
 		$carousel.append(div);
 		$quickLinks = $carousel.find('.carousel__quick-link');
 		$quickLinks.on('click', quickLink);
+		setQuickLinksShown();
 	}
 
 	// allow the carousel to be moved by up/down/left/right arrows
@@ -189,6 +205,7 @@ var Carousel = function (index, el) {
 		$(window).resize(function () {
 			setDimensions();
 			animate();
+			setQuickLinksShown();
 		});
 		addButtons();
 		addQuickLinks();
