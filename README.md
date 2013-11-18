@@ -1,2 +1,3 @@
-carousel
-========
+# Carousel
+
+Mobile carousel skeleton.
