@@ -18,6 +18,7 @@ var Carousel = function (index, el) {
 		$carouselContainer,
 		$carouselWrapper,
 		$carouselItems,
+		$quickLinks,
 		prev,
 		next,
 		width,
@@ -70,17 +71,30 @@ var Carousel = function (index, el) {
 	function updateClasses () {
 		if (viewing === 0) {
 			prev.className = prev.className + ' carousel-button__disabled';
+			next.className = next.className.replace(' carousel-button__disabled', '');
 		} else if (viewing === $carouselItems.length - 1) {
-			next.className = next.className + ' carousel-button__disabled';
-		} else if (viewing === 1) {
 			prev.className = prev.className.replace(' carousel-button__disabled', '');
-		} else if (viewing === $carouselItems.length - 2) {
+			next.className = next.className + ' carousel-button__disabled';
+		} else {
+			prev.className = prev.className.replace(' carousel-button__disabled', '');
 			next.className = next.className.replace(' carousel-button__disabled', '');
 		}
+		$quickLinks.removeClass('carousel__quick-link-viewing');
+		$quickLinks.eq(viewing).addClass('carousel__quick-link-viewing');
 	}
 
 	// move the carousel
-	function animate () {
+	function animate (previousPosition) {
+		animating = true;
+		showCurrent();
+		$carousel.addClass('carousel__animating');
+		// wait for animation to end
+		animationEnd = setTimeout(function () {
+			removePrevious(previousPosition);
+			animating = false;
+			$carousel.removeClass('carousel__animating');
+		}, animationDuration);
+		updateClasses();
 		if (direction === "horizontal") {
 			$carouselWrapper[0].style.left = (-1 * viewing * (width + margin)) + 'px';
 		} else {
@@ -107,15 +121,7 @@ var Carousel = function (index, el) {
 			viewing = previousPosition;
 			return;
 		}
-		animating = true;
-		showCurrent();
-		animate();
-		// wait for animation to end
-		animationEnd = setTimeout(function () {
-			removePrevious(previousPosition);
-			animating = false;
-		}, animationDuration);
-		updateClasses();
+		animate(previousPosition);
 	}
 
 	// add buttons to the carousel
@@ -137,19 +143,21 @@ var Carousel = function (index, el) {
 		$(next).on('click', move);
 		$carousel.append(prev, next);
 	}
-	function quickLink () {
-		console.log('yep')
-		console.log(this.position)
+	function quickLink (e) {
+		var previousPosition = viewing;
+		viewing = e.currentTarget.position;
+		animate(previousPosition);
 	}
 	function addQuickLinks () {
 		var div = document.createElement('div');
 		div.className = 'carousel__quick-links';
 		$carouselItems.each(function (index) {
 			var icon = createButton('carousel__quick-link', '#', index);
-			$(icon).on('click', quickLink);
 			div.appendChild(icon);
 		});
 		$carousel.append(div);
+		$quickLinks = $carousel.find('.carousel__quick-link');
+		$quickLinks.on('click', quickLink);
 	}
 
 	// allow the carousel to be moved by up/down/left/right arrows
@@ -179,11 +187,10 @@ var Carousel = function (index, el) {
 			animate();
 		});
 		addButtons();
-		// addQuickLinks();
+		addQuickLinks();
 		showCurrent();
 		updateClasses();
 		arrowNavigation();
-		Carousel.set = setDimensions();
 	}
 	return init(el);
 };

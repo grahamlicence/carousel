@@ -61,6 +61,7 @@ hr {
 .carousel-horizontal .carousel-container {	
 	width: 80%;
 	left: 10%;
+	margin-bottom: 2em;
 }
 
 .carousel-wrapper {
@@ -89,7 +90,8 @@ hr {
 .js .carousel-item {
 	visibility: hidden;
 }
-.carousel .carousel-item__currently-viewing {
+.carousel .carousel-item__currently-viewing,
+.carousel__animating .carousel-item {
 	visibility: visible;
 }
 
@@ -107,13 +109,14 @@ hr {
 
 .carousel-horizontal .carousel-item {
 	margin-right: 0.5em;
-	/*margin-right: 6px;*/
 }
 .carousel-vertical .carousel-item {
 	margin-bottom: 0.5em;
 }
 
 .carousel-content {	
+	background: #fff;
+	background: rgba(255,255,255,0.7);
 	padding: 0.5em;
 	position: absolute;
 	bottom: 0;
@@ -122,35 +125,15 @@ hr {
 }
 
 .carousel img {
-	opacity: 0.05;
-	/*width: 100%;*/
+	/*opacity: 0.05;*/
 	margin: 0 auto;
 	display: block;
-	/*margin-bottom: 1em;*/
+	width: 100%;
 }
 
-@media (min-width: 560px) {
+@media (min-width: 450px) {
 	.carousel img {
 		width: auto;
-	}
-}
-
-@media (min-width: 720px) {
-	.carousel img {
-		/*margin: 0;*/
-		/*float: left;*/
-		/*margin-right: 1em;*/
-	}
-	.carousel p {
-		clear: left;
-	}
-}
-
-@media (min-width: 960px) {
-	.carousel p {
-		clear: none;
-		float: left;
-		width: 45%;
 	}
 }
 
@@ -228,20 +211,30 @@ hr {
 	right: -15px;
 }
 .carousel-button__disabled {
-	opacity: 0.3;
+	color: #ccc;
 	cursor: default;
 }
 
 .carousel__quick-links {
 	position: absolute;
+}
+.carousel-horizontal .carousel__quick-links {
 	bottom: 0;
 	left: 45%;
+}
+.carousel-vertical .carousel__quick-links {
+	left: auto;
+	bottom: 2em;
+	right: 0;
 }
 .carousel__quick-link {
 	width: 10px;
 	height: 10px;
+	background: #ccc;
 	display: inline-block;
-	background: #000;
 	margin-right: 0.3em;
 	border-radius: 10px;
+}
+.carousel__quick-link-viewing {
+	background: #000;
 }
