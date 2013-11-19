@@ -124,7 +124,7 @@ var Carousel = function (index, el) {
 			$carousel.removeClass('carousel__animating');
 		}, animationDuration);
 		updateClasses(previousPosition);
-		$('.debug').text(iterationWidth)
+		// $('.debug').text(iterationWidth)
 		// $('.debug').text((width / itemsShown) + margin + '/' + $carouselContainer.width() + '/' + width)
 		if (direction === 'horizontal') {
 			$carouselWrapper[0].style.left = (-1 * viewing * (iterationWidth + margin)) + 'px';
@@ -208,8 +208,21 @@ var Carousel = function (index, el) {
 		});
 	}
 
+	// window resize events
+	var endOfReset;
+	function resize () {
+		setDimensions();
+		animate();
+		setQuickLinksShown();
+		// disable animations when resetting
+		$carousel.addClass('carousel-reset');
+		clearTimeout(endOfReset);
+		endOfReset = setTimeout(function () {
+			$carousel.removeClass('carousel-reset');
+		}, 500);
+	}
+
 	function init (el) {
-		var endOfReset;
 		$carousel = $(el);
 		$carouselContainer = $carousel.find('.carousel-container');
 		$carouselWrapper = $carousel.find('.carousel-wrapper');
@@ -224,18 +237,7 @@ var Carousel = function (index, el) {
 		updateClasses();
 		arrowNavigation();
 		// viewport change events
-		$(window).resize(function () {
-			setDimensions();
-			animate();
-			setQuickLinksShown();
-			// disable animations when resetting
-			$carousel.addClass('carousel-reset');
-			clearTimeout(endOfReset);
-			console.log('reset')
-			endOfReset = setTimeout(function () {
-				$carousel.removeClass('carousel-reset');
-			}, 500);
-		});
+		$(window).resize(resize);
 	}
 	return init(el);
 };
