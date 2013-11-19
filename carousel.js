@@ -28,6 +28,7 @@ var Carousel = function (index, el) {
 		margin,
 		iterationWidth, // width of each animated point
 		direction,
+		endOfReset,
 		animating = false,
 		animationEnd,
 		animationDuration = supportsTransitions() ? 1000 : 0, // length of CSS animation
@@ -209,7 +210,6 @@ var Carousel = function (index, el) {
 	}
 
 	// window resize events
-	var endOfReset;
 	function resize () {
 		setDimensions();
 		animate();
