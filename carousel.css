@@ -197,7 +197,7 @@ hr {
 	right: 0;
 }
 /* nudge arrows in on larger viewports */
-@media (min-width: 480px) {
+@media (min-width: 520px) {
 	.carousel-horizontal .carousel-prev {
 		left: 15px;
 	}
@@ -241,7 +241,9 @@ hr {
 }
 .carousel-horizontal .carousel__quick-links {
 	bottom: 0;
-	left: 45%;
+	left: 0;
+	width: 100%;
+	text-align: center;
 }
 .carousel-vertical .carousel__quick-links {
 	left: auto;
