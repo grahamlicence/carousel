@@ -58,6 +58,7 @@ hr {
 /* carousel window */
 .carousel-container {
 	overflow: hidden;
+	border: solid 1px green;
 }
 .js .carousel-container {
 	position: relative;
@@ -88,6 +89,7 @@ hr {
 
 .carousel-item {
 	background: #f9f9f9;
+	background: lightgreen;
 	float: left;
 	position: relative;
 	/*max-width: 500px;*/
@@ -128,17 +130,6 @@ hr {
 	width: 100%;
 	text-align: center;
 }
-/* content types match the image included in the example */
-.carousel-content__small {
-	max-width: 200px;
-	left: 50%;
-	margin-left: -100px;
-}
-.carousel-content__wide {
-	max-width: 400px;
-	left: 50%;
-	margin-left: -200px;
-}
 
 .carousel img {
 	/*opacity: 0.05;*/
@@ -147,9 +138,20 @@ hr {
 	width: 100%;
 }
 
-@media (min-width: 450px) {
+@media (min-width: 520px) {
 	.carousel img {
 		width: auto;
+	}
+	/* content types match the image included in the example */
+	.carousel-content__small {
+		max-width: 200px;
+		left: 50%;
+		margin-left: -100px;
+	}
+	.carousel-content__wide {
+		max-width: 400px;
+		left: 50%;
+		margin-left: -200px;
 	}
 }
 

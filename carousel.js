@@ -26,6 +26,7 @@ var Carousel = function (index, el) {
 		width,
 		height,
 		margin,
+		iterationWidth, // width of each animated point
 		direction,
 		animating = false,
 		animationEnd,
@@ -63,31 +64,49 @@ var Carousel = function (index, el) {
 				maxWidth = elWidth;
 			}
 		});
+		// find out margin width (if any)
+		// margin = parseFloat($carouselItems.eq(0).css('marginRight'));
+		// if (direction === 'horizontal') {
+		// 	margin = parseFloat($carouselItems.eq(0).css('marginRight'));
+		// 	// $carouselWrapper.width($carouselItems.length * (width + margin));
+		// } else if (direction === 'vertical') {
+		// 	margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
+		// 	// $carouselWrapper.height($carouselItems.length * (height + margin));
+		// }
 		// set height
 		$carouselItems.height(height);
 		$carouselContainer.height(height);
 		// set widths
-		itemsShown = parseInt($carouselContainer.width() / maxWidth, 10);
-		if (!itemsShown) {
-			itemsShown = 1; // in case CSS breaks and this is 0
-		}
 		if (viewing > $carouselItems.length - itemsShown) {
 			viewing = $carouselItems.length - itemsShown;
 		}
 		width = $carouselContainer.width();
-		$carouselItems.width(width / itemsShown);
+		// 100 pixels with 4 items in
+		// each item 23 pixels wide with 2 px margin
+		// 100 / 4 is 25
+		// total width 106
+		// 100 - 6 is 23.5
+		// width less (margin times (items shown less 1) divided by items shown
 
-		if (direction === 'vertical') {
-			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
-			$carouselWrapper.height($carouselItems.length * (height + margin));
-		} else if (direction === 'horizontal') {
+		if (direction === 'horizontal') {
 			margin = parseFloat($carouselItems.eq(0).css('marginRight'));
 			$carouselWrapper.width($carouselItems.length * (width + margin));
+		} else if (direction === 'vertical') {
+			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
+			$carouselWrapper.height($carouselItems.length * (height + margin));
 		}
+		itemsShown = parseInt(($carouselContainer.width()) / (maxWidth + margin), 10);
+		// $('.debug').text($('.debug').text() + ' ' + $carouselContainer.width() + ' ' + (maxWidth + margin))
+		if (!itemsShown) {
+			itemsShown = 1; // in case CSS breaks and this is 0
+		}
+		iterationWidth = (width - (margin * (itemsShown - 1)))  / itemsShown;
+		$carouselItems.width(iterationWidth);
 	}
 
 	// add/remove disabled class from arrows
 	function updateClasses (previousPosition) {
+		// $('.debug').text('viewing :' + viewing + ' prev: ' + previousPosition)
 		if (viewing === 0) {
 			prev.className = prev.className + ' carousel-button__disabled';
 		} else if (viewing === $carouselItems.length - itemsShown) {
@@ -95,7 +114,7 @@ var Carousel = function (index, el) {
 		}
 		if (previousPosition === 0) {
 			prev.className = prev.className.replace(' carousel-button__disabled', '');
-		} else if (previousPosition === $carouselItems.length - 1) {
+		} else if (previousPosition === $carouselItems.length - itemsShown) {
 			next.className = next.className.replace(' carousel-button__disabled', '');
 		}
 		// update quick links
@@ -107,16 +126,19 @@ var Carousel = function (index, el) {
 	function animate (previousPosition) {
 		animating = true;
 		showCurrent();
+		// make all items visible when animating
 		$carousel.addClass('carousel__animating');
-		// wait for animation to end
 		clearTimeout(animationEnd);
+		// wait for animation to end
 		animationEnd = setTimeout(function () {
 			animating = false;
 			$carousel.removeClass('carousel__animating');
 		}, animationDuration);
 		updateClasses(previousPosition);
+		$('.debug').text(iterationWidth)
+		// $('.debug').text((width / itemsShown) + margin + '/' + $carouselContainer.width() + '/' + width)
 		if (direction === 'horizontal') {
-			$carouselWrapper[0].style.left = (-1 * viewing * ((width / itemsShown) + margin)) + 'px';
+			$carouselWrapper[0].style.left = (-1 * viewing * (iterationWidth + margin)) + 'px';
 		} else {
 			$carouselWrapper[0].style.top = (-1 * viewing * (height + margin)) + 'px';
 		}
