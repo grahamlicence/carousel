@@ -128,6 +128,17 @@ hr {
 	width: 100%;
 	text-align: center;
 }
+/* content types match the image included in the example */
+.carousel-content__small {
+	max-width: 200px;
+	left: 50%;
+	margin-left: -100px;
+}
+.carousel-content__wide {
+	max-width: 400px;
+	left: 50%;
+	margin-left: -200px;
+}
 
 .carousel img {
 	/*opacity: 0.05;*/
