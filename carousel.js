@@ -64,30 +64,16 @@ var Carousel = function (index, el) {
 				maxWidth = elWidth;
 			}
 		});
-		// find out margin width (if any)
-		// margin = parseFloat($carouselItems.eq(0).css('marginRight'));
-		// if (direction === 'horizontal') {
-		// 	margin = parseFloat($carouselItems.eq(0).css('marginRight'));
-		// 	// $carouselWrapper.width($carouselItems.length * (width + margin));
-		// } else if (direction === 'vertical') {
-		// 	margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
-		// 	// $carouselWrapper.height($carouselItems.length * (height + margin));
-		// }
 		// set height
 		$carouselItems.height(height);
 		$carouselContainer.height(height);
 		// set widths
+		width = $carouselContainer.width();
+		// change viewing if viewing more than currently shown
 		if (viewing > $carouselItems.length - itemsShown) {
 			viewing = $carouselItems.length - itemsShown;
 		}
-		width = $carouselContainer.width();
-		// 100 pixels with 4 items in
-		// each item 23 pixels wide with 2 px margin
-		// 100 / 4 is 25
-		// total width 106
-		// 100 - 6 is 23.5
-		// width less (margin times (items shown less 1) divided by items shown
-
+		// find out margin width (if any) and set container width
 		if (direction === 'horizontal') {
 			margin = parseFloat($carouselItems.eq(0).css('marginRight'));
 			$carouselWrapper.width($carouselItems.length * (width + margin));
@@ -95,11 +81,14 @@ var Carousel = function (index, el) {
 			margin = parseFloat($carouselItems.eq(0).css('marginBottom'));
 			$carouselWrapper.height($carouselItems.length * (height + margin));
 		}
+		// how many carousel items visible at one point
 		itemsShown = parseInt(($carouselContainer.width()) / (maxWidth + margin), 10);
 		// $('.debug').text($('.debug').text() + ' ' + $carouselContainer.width() + ' ' + (maxWidth + margin))
 		if (!itemsShown) {
 			itemsShown = 1; // in case CSS breaks and this is 0
 		}
+		// set the width of each item to fill the carousel container
+		// width less (margin times (items shown less 1) divided by items shown
 		iterationWidth = (width - (margin * (itemsShown - 1)))  / itemsShown;
 		$carouselItems.width(iterationWidth);
 	}
@@ -220,6 +209,7 @@ var Carousel = function (index, el) {
 	}
 
 	function init (el) {
+		var endOfReset;
 		$carousel = $(el);
 		$carouselContainer = $carousel.find('.carousel-container');
 		$carouselWrapper = $carousel.find('.carousel-wrapper');
@@ -228,16 +218,24 @@ var Carousel = function (index, el) {
 		$carouselContainer.attr('tabindex', 0);
 		$carousel.addClass('carousel-init');
 		setDimensions();
-		$(window).resize(function () {
-			setDimensions();
-			animate();
-			setQuickLinksShown();
-		});
 		addButtons();
 		addQuickLinks();
 		showCurrent();
 		updateClasses();
 		arrowNavigation();
+		// viewport change events
+		$(window).resize(function () {
+			setDimensions();
+			animate();
+			setQuickLinksShown();
+			// disable animations when resetting
+			$carousel.addClass('carousel-reset');
+			clearTimeout(endOfReset);
+			console.log('reset')
+			endOfReset = setTimeout(function () {
+				$carousel.removeClass('carousel-reset');
+			}, 500);
+		});
 	}
 	return init(el);
 };

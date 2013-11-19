@@ -42,8 +42,6 @@ hr {
 	top: 0;
 	z-index: 10;
 	opacity: 0.5;
-	-webkit-transition: all 1s;
-	transition: all 1s;
 }
 .js .carousel-init:after {
 	content: "  "; /* gets IE to repaint the psuedo element */
@@ -58,7 +56,7 @@ hr {
 /* carousel window */
 .carousel-container {
 	overflow: hidden;
-	border: solid 1px green;
+	/*border: solid 1px green;*/
 }
 .js .carousel-container {
 	position: relative;
@@ -86,10 +84,15 @@ hr {
 	-webkit-transition: top 1s;
 	transition: top 1s;
 }
+/* don't animate when resetting positions */
+.js .carousel-reset .carousel-wrapper {
+	-webkit-transition-duration: 0;
+	transition-duration: 0;
+}
 
 .carousel-item {
 	background: #f9f9f9;
-	background: lightgreen;
+	/*background: lightgreen;*/
 	float: left;
 	position: relative;
 	/*max-width: 500px;*/
