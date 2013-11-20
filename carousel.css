@@ -74,6 +74,8 @@ hr {
 	position: absolute;
 	left: 0;
 	top: 0;
+	margin: 0;
+	padding: 0;
 }
 /*only adding transitions on position*/
 .js .carousel-horizontal .carousel-wrapper {
@@ -167,6 +169,7 @@ hr {
 	width: 35px;
 	overflow: hidden;
 	color: #000;
+	line-height: 1;
 }
 /* horizontal */
 .carousel-horizontal .carousel-prev,
