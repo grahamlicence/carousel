@@ -97,6 +97,9 @@ var Carousel = function (index, el) {
 	// add/remove disabled class from arrows
 	function updateClasses (previousPosition) {
 		// $('.debug').text('viewing :' + viewing + ' prev: ' + previousPosition)
+		if (previousPosition === undefined) {
+			return; // from viewport change no need to updated classes
+		}
 		if (viewing === 0) {
 			prev.className = prev.className + ' carousel-button__disabled';
 		} else if (viewing === $carouselItems.length - itemsShown) {
@@ -234,7 +237,7 @@ var Carousel = function (index, el) {
 		addButtons();
 		addQuickLinks();
 		showCurrent();
-		updateClasses();
+		updateClasses(1);
 		arrowNavigation();
 		// viewport change events
 		$(window).resize(resize);

@@ -24,6 +24,7 @@ hr {
 
 .carousel {
 	position: relative;
+	opacity: 0.1;
 }
 .js .carousel {
 	overflow: hidden;
